@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:recorder/services/pallete.dart';
+import 'package:recorder/services/sound_player.dart';
 
-class ChatBubbleAtom extends StatelessWidget {
+class ChatBubbleAtom extends StatefulWidget {
   final String audio;
+  final SoundPlayer player;
 
   ChatBubbleAtom({
     required this.audio,
+    required this.player,
   });
 
   @override
+  _ChatBubbleAtomState createState() => _ChatBubbleAtomState();
+}
+
+class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
+  @override
   Widget build(BuildContext context) {
-    // final bg = isMe ? Colors.white : Colors.greenAccent.shade100;
-    // final align = isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end;
-    // final icon = delivered ? Icons.done_all : Icons.done;
-    // final radius = isMe
-    //     ? BorderRadius.only(
-    //         topRight: Radius.circular(5.0),
-    //         bottomLeft: Radius.circular(10.0),
-    //         bottomRight: Radius.circular(5.0),
-    //       )
-    //     : BorderRadius.only(
-    //         topLeft: Radius.circular(5.0),
-    //         bottomLeft: Radius.circular(5.0),
-    //         bottomRight: Radius.circular(10.0),
-    //       );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
@@ -48,10 +42,20 @@ class ChatBubbleAtom extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.play_arrow,
-                      size: 38,
-                      color: Pallete.icon,
+                    GestureDetector(
+                      onTap: () {
+                        if (widget.player.isPlaying) {
+                          widget.player.pause();
+                        } else {
+                          widget.player.play(widget.audio);
+                        }
+                        setState(() {});
+                      },
+                      child: Icon(
+                        widget.player.isPlaying ? Icons.pause : Icons.play_arrow,
+                        size: 38,
+                        color: Pallete.icon,
+                      ),
                     ),
                   ],
                 ),

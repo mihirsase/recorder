@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recorder/blocs/home/home_bloc.dart';
+import 'package:recorder/blocs/home/home_event.dart';
 import 'package:recorder/blocs/home/home_state.dart';
 import 'package:recorder/components/atoms/chat_bubble_atom.dart';
+import 'package:recorder/components/atoms/text_field_atom.dart';
 import 'package:recorder/services/pallete.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,7 +20,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _homeBloc = HomeBloc();
+    _homeBloc.recorder.init();
+    _homeBloc.player.init();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _homeBloc.recorder.dispose();
+    _homeBloc.player.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,7 +74,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             reverse: true,
             children: [
-              ChatBubbleAtom(audio: 'Test Audio'),
+              ..._homeBloc.audioList
+                  .map((final String audio) => ChatBubbleAtom(
+                        audio: audio,
+                        player: _homeBloc.player,
+                      ))
+                  .toList()
+                  .reversed
+                  .toList(),
             ],
           ),
         ),
@@ -76,38 +94,43 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 flex: 10,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 18.0),
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Pallete.primaryLight,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(30),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.mic,
-                        color: Pallete.red,
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      Text(
-                        '0:02',
-                        style: TextStyle(color: Pallete.icon, fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-                // TextFieldAtom()
+                child: _homeBloc.isRecording
+                    ? Container(
+                        padding: EdgeInsets.symmetric(horizontal: 18.0),
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Pallete.primaryLight,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.mic,
+                              color: Pallete.red,
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Text(
+                              '0:02',
+                              style: TextStyle(color: Pallete.icon, fontSize: 18),
+                            ),
+                          ],
+                        ),
+                      )
+                    : TextFieldAtom(),
               ),
               Expanded(
                 flex: 2,
                 child: GestureDetector(
-                  onLongPress: () async {},
-                  onLongPressEnd: (LongPressEndDetails? details) async {},
+                  onLongPress: () async {
+                    _homeBloc.add(StartRecording());
+                  },
+                  onLongPressEnd: (LongPressEndDetails? details) async {
+                    _homeBloc.add(StopRecording());
+                  },
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
