@@ -67,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get _appBar {
     return AppBar(
+      brightness: Brightness.dark,
       backgroundColor: Pallete.primary,
       title: Text(
         'What\'s App',
