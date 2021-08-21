@@ -22,7 +22,7 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Container(
-          margin: const EdgeInsets.all(3.0),
+          margin: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 12.0),
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             boxShadow: [

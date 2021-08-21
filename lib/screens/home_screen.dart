@@ -93,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             children: [
               Expanded(
-                flex: 10,
                 child: _homeBloc.isRecording
                     ? Container(
                         padding: EdgeInsets.symmetric(horizontal: 18.0),
@@ -122,25 +121,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     : TextFieldAtom(),
               ),
-              Expanded(
-                flex: 2,
-                child: GestureDetector(
-                  onLongPress: () async {
-                    _homeBloc.add(StartRecording());
-                  },
-                  onLongPressEnd: (LongPressEndDetails? details) async {
-                    _homeBloc.add(StopRecording());
-                  },
-                  child: Container(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: Pallete.greenLight,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.mic,
-                      color: Pallete.white,
-                    ),
+              SizedBox(
+                width: 12,
+              ),
+              GestureDetector(
+                onLongPress: () async {
+                  _homeBloc.add(StartRecording());
+                },
+                onLongPressEnd: (LongPressEndDetails? details) async {
+                  _homeBloc.add(StopRecording());
+                },
+                child: Container(
+                  height: 48,
+                  width: 48,
+                  decoration: BoxDecoration(
+                    color: Pallete.greenLight,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.mic,
+                    color: Pallete.white,
                   ),
                 ),
               ),
