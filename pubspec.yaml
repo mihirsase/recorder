@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_sound: ^8.3.9
+  flutter_sound_lite: ^8.3.9
 
   permission_handler: ^8.1.3
 

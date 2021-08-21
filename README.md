@@ -19,7 +19,7 @@ This is a flutter application for a demonstrating bloc pattern architecture and 
   
 ## Third party packages used in the project  
   
-- **flutter_sound** : Used for recording and playing sounds  
+- **flutter_sound_lite** : Used for recording and playing sounds  
 - **flutter_bloc** : Used for separating business logic from ui code
 - **permission_handler** : Manage Microphone permissions
 - **stop_watch_timer** : Keep track of audio record/play time

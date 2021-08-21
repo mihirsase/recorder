@@ -1,4 +1,5 @@
-import 'package:flutter_sound/flutter_sound.dart';
+
+import 'package:flutter_sound_lite/flutter_sound.dart';
 
 class SoundPlayer {
   FlutterSoundPlayer? _myPlayer;

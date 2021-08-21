@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:recorder/blocs/home/home_event.dart';
 import 'package:recorder/blocs/home/home_state.dart';
 import 'package:recorder/models/audio.dart';
@@ -31,12 +31,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } else if (event is StopRecording) {
       String? audio = await recorder.stop();
       if (audio != null) {
-        Duration? duration =
-            await flutterSoundHelper.duration('/data/user/0/com.example.recorder/cache/$audio');
         audioList.add(Audio(
           path: audio,
           createdAt: DateTime.now(),
-          duration: duration,
         ));
       }
       isRecording = false;
