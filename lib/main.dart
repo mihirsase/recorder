@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recorder/screens/home_screen.dart';
 
 void main() {
   runApp(Recorder());
@@ -14,7 +15,12 @@ class Recorder extends StatefulWidget {
 class _RecorderState extends State<Recorder> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return MaterialApp(
+      title: 'Recorder',
+      themeMode: ThemeMode.light,
+      debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
+    );
   }
 }
 
