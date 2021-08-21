@@ -15,6 +15,10 @@ class TextFieldAtom extends StatelessWidget {
         fillColor: Pallete.primaryLight,
         contentPadding: new EdgeInsets.symmetric(horizontal: 18.0),
         filled: true,
+        hintText: 'Type a message',
+        hintStyle: TextStyle(
+          color: Pallete.icon,
+        ),
         border: OutlineInputBorder(
           borderSide: BorderSide(
             color: Pallete.white,

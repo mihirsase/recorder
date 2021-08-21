@@ -48,7 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
             top: false,
             child: Scaffold(
               appBar: _appBar as PreferredSizeWidget?,
-              body: _body(state),
+              body: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('lib/assets/background.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: _body(state),
+              ),
             ),
           );
         },
