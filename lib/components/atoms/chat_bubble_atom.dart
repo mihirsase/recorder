@@ -71,23 +71,27 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
                     GestureDetector(
                       onTap: () async {
                         if (widget.player.isPlaying) {
-                          widget.player.stop();
+                          widget.player.pause();
                           stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-                          position = 0;
                         } else {
-                          Duration? d = await widget.player.play(widget.audio.path, () {
-                            stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-                            position = 0;
-                            setState(() {});
-                          });
-                          duration = d!.inMilliseconds;
-                          stopWatchTimer.setPresetSecondTime(d.inSeconds);
-                          stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                          if (widget.player.isPaused && position != 0) {
+                            widget.player.resume();
+                            stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                          } else {
+                            Duration? d = await widget.player.play(widget.audio.path, () {
+                              stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+                              position = 0;
+                              setState(() {});
+                            });
+                            duration = d!.inMilliseconds;
+                            stopWatchTimer.setPresetSecondTime(d.inSeconds);
+                            stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                          }
                         }
                         setState(() {});
                       },
                       child: Icon(
-                        widget.player.isPlaying ? Icons.stop : Icons.play_arrow,
+                        widget.player.isPlaying ? Icons.pause : Icons.play_arrow,
                         size: 38,
                         color: Pallete.icon,
                       ),

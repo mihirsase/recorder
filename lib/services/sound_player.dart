@@ -5,6 +5,8 @@ class SoundPlayer {
   bool _isInitialized = false;
 
   bool get isPlaying => _myPlayer!.isPlaying;
+  bool get isPaused => _myPlayer!.isPaused;
+
 
   Future init() async {
     _myPlayer = FlutterSoundPlayer();
@@ -31,8 +33,13 @@ class SoundPlayer {
     return d;
   }
 
-  void stop() async {
+  void pause() async {
     if (!_isInitialized) return;
-    await _myPlayer!.stopPlayer();
+    await _myPlayer!.pausePlayer();
+  }
+
+  void resume() async {
+    if (!_isInitialized) return;
+    await _myPlayer!.resumePlayer();
   }
 }
