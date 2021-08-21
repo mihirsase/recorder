@@ -4,6 +4,7 @@ import 'package:recorder/blocs/home/home_bloc.dart';
 import 'package:recorder/blocs/home/home_event.dart';
 import 'package:recorder/blocs/home/home_state.dart';
 import 'package:recorder/components/atoms/chat_bubble_atom.dart';
+import 'package:recorder/components/atoms/record_atom.dart';
 import 'package:recorder/components/atoms/text_field_atom.dart';
 import 'package:recorder/services/pallete.dart';
 
@@ -94,30 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 child: _homeBloc.isRecording
-                    ? Container(
-                        padding: EdgeInsets.symmetric(horizontal: 18.0),
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: Pallete.primaryLight,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(30),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.mic,
-                              color: Pallete.red,
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              '0:02',
-                              style: TextStyle(color: Pallete.icon, fontSize: 18),
-                            ),
-                          ],
-                        ),
+                    ? RecordAtom(
+                        stopWatchTimer: _homeBloc.stopWatchTimer,
                       )
                     : TextFieldAtom(),
               ),
