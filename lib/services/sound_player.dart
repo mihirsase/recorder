@@ -19,18 +19,20 @@ class SoundPlayer {
     _isInitialized = false;
   }
 
-  void play(String audio) async {
-    if (!_isInitialized) return;
-    await _myPlayer!.startPlayer(
+  Future<Duration?> play(String audio,Function whenFinished) async {
+    if (!_isInitialized) return null;
+    Duration? d = await _myPlayer!.startPlayer(
       fromURI: audio,
       codec: Codec.mp3,
       whenFinished: () {
-        print('Done');
+        whenFinished();
       },
     );
+    return d;
   }
 
-  void pause() async {
+  void stop() async {
     if (!_isInitialized) return;
+    await _myPlayer!.stopPlayer();
   }
 }

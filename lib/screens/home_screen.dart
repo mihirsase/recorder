@@ -76,10 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
             reverse: true,
             children: [
               ..._homeBloc.audioList
-                  .map((final String audio) => ChatBubbleAtom(
-                        audio: audio,
-                        player: _homeBloc.player,
-                      ))
+                  .map(
+                    (final String audio) => ChatBubbleAtom(
+                      key: ValueKey(audio),
+                      audio: audio,
+                      player: _homeBloc.player,
+                    ),
+                  )
                   .toList()
                   .reversed
                   .toList(),
