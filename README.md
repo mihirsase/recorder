@@ -1,16 +1,27 @@
-# recorder
+# Recorder  
+  
+This is a flutter application for a demonstrating bloc pattern architecture and audio recording functionality.  
+## APK Link 
+[Android apk download link](https://drive.google.com/file/d/1LXxTMXHN1ysdNi83PD2O7QedUN5X2XP1/view?usp=sharing)
 
-A new Flutter project.
 
-## Getting Started
+## Project Structure  
+  
+- **.screens** : All the main screens for the app goes into this package  
+- **.blocs** : All business logic is inside these files 
+- **.components** : All reusable widgets are stored in this package  
+  - **.atoms** : Atoms are completely stateless reusable components.  
+  - **.molecules** : Molecules are stateful reusable components.  
+  - **.organisms** : Organisms have their own state,bloc and probably won't be used again.  
+- **.models** : All the blueprint files for the app goes into this package  
+- **.services** : All classes which provides additional help goes in this package  
+- **.assets** : All external images and fonts are stored here  
+  
+## Third party packages used in the project  
+  
+- **flutter_sound** : Used for recording and playing sounds  
+- **flutter_bloc** : Used for separating business logic from ui code
+- **permission_handler** : Manage Microphone permissions
+- **stop_watch_timer** : Keep track of audio record/play time
+- **intl** : Date formatting
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
