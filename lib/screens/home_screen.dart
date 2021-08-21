@@ -6,6 +6,7 @@ import 'package:recorder/blocs/home/home_state.dart';
 import 'package:recorder/components/atoms/chat_bubble_atom.dart';
 import 'package:recorder/components/atoms/record_atom.dart';
 import 'package:recorder/components/atoms/text_field_atom.dart';
+import 'package:recorder/models/audio.dart';
 import 'package:recorder/services/pallete.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -85,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               ..._homeBloc.audioList
                   .map(
-                    (final String audio) => ChatBubbleAtom(
-                      key: ValueKey(audio),
+                    (final Audio audio) => ChatBubbleAtom(
+                      key: ValueKey(audio.path),
                       audio: audio,
                       player: _homeBloc.player,
                     ),

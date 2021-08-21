@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:recorder/models/audio.dart';
 import 'package:recorder/services/pallete.dart';
 import 'package:recorder/services/sound_player.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ChatBubbleAtom extends StatefulWidget {
-  final String audio;
+  final Audio audio;
   final SoundPlayer player;
 
   ChatBubbleAtom({
@@ -23,12 +25,18 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
   );
   int position = 0;
   int duration = 0;
+  String formattedDuration = '';
 
   @override
   void initState() {
     stopWatchTimer.rawTime.listen((value) {
       setState(() {
         position = (duration - value).isNegative ? 0 : duration - value;
+        formattedDuration = StopWatchTimer.getDisplayTime(
+          value,
+          hours: false,
+          milliSecond: false,
+        );
       });
     });
     super.initState();
@@ -56,7 +64,7 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
           child: Stack(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(right: 48.0),
+                padding: EdgeInsets.only(right: 0.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -67,7 +75,7 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
                           stopWatchTimer.onExecute.add(StopWatchExecute.stop);
                           position = 0;
                         } else {
-                          Duration? d = await widget.player.play(widget.audio, () {
+                          Duration? d = await widget.player.play(widget.audio.path, () {
                             stopWatchTimer.onExecute.add(StopWatchExecute.stop);
                             position = 0;
                             setState(() {});
@@ -88,10 +96,34 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
                       width: 12,
                     ),
                     IgnorePointer(
-                      child: Slider(
-                        value: position.toDouble(),
-                        max: duration.toDouble(),
-                        onChanged: (double) {},
+                      child: Stack(
+                        children: [
+                          SliderTheme(
+                            data: SliderThemeData(
+                              trackShape: CustomTrackShape(),
+                              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0),
+                            ),
+                            child: Slider(
+                              value: position.toDouble(),
+                              max: duration.toDouble(),
+                              activeColor: Pallete.icon,
+                              inactiveColor: Pallete.icon.withOpacity(0.5),
+                              onChanged: (double) {},
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            child: Text(
+                              widget.player.isPlaying
+                                  ? formattedDuration
+                                  : widget.audio.formattedDuration,
+                              style: TextStyle(
+                                color: Pallete.icon,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -102,7 +134,7 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
                 right: 0.0,
                 child: Row(
                   children: <Widget>[
-                    Text('10:04 PM',
+                    Text(widget.audio.formattedTime,
                         style: TextStyle(
                           color: Pallete.icon,
                           fontSize: 10.0,
@@ -121,5 +153,21 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
         )
       ],
     );
+  }
+}
+
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight!;
+    final double trackLeft = offset.dx;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

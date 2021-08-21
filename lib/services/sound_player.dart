@@ -1,4 +1,4 @@
-import 'package:flutter_sound_lite/flutter_sound.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 
 class SoundPlayer {
   FlutterSoundPlayer? _myPlayer;
@@ -19,7 +19,7 @@ class SoundPlayer {
     _isInitialized = false;
   }
 
-  Future<Duration?> play(String audio,Function whenFinished) async {
+  Future<Duration?> play(String audio, Function whenFinished) async {
     if (!_isInitialized) return null;
     Duration? d = await _myPlayer!.startPlayer(
       fromURI: audio,
