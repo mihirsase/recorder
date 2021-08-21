@@ -1,49 +1,60 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recorder/blocs/organisms/chat_bubble/chat_bubble_bloc.dart';
+import 'package:recorder/blocs/organisms/chat_bubble/chat_bubble_event.dart';
+import 'package:recorder/blocs/organisms/chat_bubble/chat_bubble_state.dart';
 import 'package:recorder/models/audio.dart';
 import 'package:recorder/services/pallete.dart';
 import 'package:recorder/services/sound_player.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class ChatBubbleAtom extends StatefulWidget {
+class ChatBubbleOrganism extends StatefulWidget {
   final Audio audio;
   final SoundPlayer player;
 
-  ChatBubbleAtom({
+  ChatBubbleOrganism({
     required this.audio,
     required this.player,
     Key? key,
   }) : super(key: key);
 
   @override
-  _ChatBubbleAtomState createState() => _ChatBubbleAtomState();
+  _ChatBubbleOrganismState createState() => _ChatBubbleOrganismState();
 }
 
-class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
-  final StopWatchTimer stopWatchTimer = StopWatchTimer(
-    mode: StopWatchMode.countDown,
-  );
-  int position = 0;
-  int duration = 0;
-  String formattedDuration = '';
+class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
+  late ChatBubbleBloc _chatBubbleBloc;
 
   @override
   void initState() {
-    stopWatchTimer.rawTime.listen((value) {
-      setState(() {
-        position = (duration - value).isNegative ? 0 : duration - value;
-        formattedDuration = StopWatchTimer.getDisplayTime(
-          value,
-          hours: false,
-          milliSecond: false,
-        );
-      });
+    _chatBubbleBloc = ChatBubbleBloc(
+      audio: widget.audio,
+      player: widget.player,
+    );
+    _chatBubbleBloc.stopWatchTimer.rawTime.listen((value) {
+      _chatBubbleBloc.add(StopWatchTick(value: value));
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider<ChatBubbleBloc>(
+      create: (final BuildContext _) {
+        return _chatBubbleBloc;
+      },
+      child: BlocBuilder<ChatBubbleBloc, ChatBubbleState>(
+        builder: (
+          final BuildContext _,
+          final ChatBubbleState state,
+        ) {
+          return _body(state);
+        },
+      ),
+    );
+  }
+
+  Widget _body(final ChatBubbleState state) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
@@ -71,21 +82,12 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
                     GestureDetector(
                       onTap: () async {
                         if (widget.player.isPlaying) {
-                          widget.player.pause();
-                          stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+                          _chatBubbleBloc.add(PauseAudio());
                         } else {
-                          if (widget.player.isPaused && position != 0) {
-                            widget.player.resume();
-                            stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                          if (widget.player.isPaused && _chatBubbleBloc.position != 0) {
+                            _chatBubbleBloc.add(ResumeAudio());
                           } else {
-                            Duration? d = await widget.player.play(widget.audio.path, () {
-                              stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-                              position = 0;
-                              setState(() {});
-                            });
-                            duration = d!.inMilliseconds;
-                            stopWatchTimer.setPresetSecondTime(d.inSeconds);
-                            stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                            _chatBubbleBloc.add(PlayAudio());
                           }
                         }
                         setState(() {});
@@ -108,8 +110,8 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
                               thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0),
                             ),
                             child: Slider(
-                              value: position.toDouble(),
-                              max: duration.toDouble(),
+                              value: _chatBubbleBloc.position.toDouble(),
+                              max: _chatBubbleBloc.duration.toDouble(),
                               activeColor: Pallete.icon,
                               inactiveColor: Pallete.icon.withOpacity(0.5),
                               onChanged: (double) {},
@@ -119,7 +121,7 @@ class _ChatBubbleAtomState extends State<ChatBubbleAtom> {
                             bottom: 0,
                             child: Text(
                               widget.player.isPlaying
-                                  ? formattedDuration
+                                  ? _chatBubbleBloc.formattedDuration
                                   : widget.audio.formattedDuration,
                               style: TextStyle(
                                 color: Pallete.icon,

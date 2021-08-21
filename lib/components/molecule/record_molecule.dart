@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:recorder/services/pallete.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class RecordAtom extends StatefulWidget {
+class RecordMolecule extends StatefulWidget {
   final StopWatchTimer stopWatchTimer;
 
-  const RecordAtom({
+  const RecordMolecule({
     required this.stopWatchTimer,
   });
 
   @override
-  _RecordAtomState createState() => _RecordAtomState();
+  _RecordMoleculeState createState() => _RecordMoleculeState();
 }
 
-class _RecordAtomState extends State<RecordAtom> {
+class _RecordMoleculeState extends State<RecordMolecule> {
   String _displayTime = '';
 
   @override

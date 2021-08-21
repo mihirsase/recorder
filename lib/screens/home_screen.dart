@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recorder/blocs/home/home_bloc.dart';
 import 'package:recorder/blocs/home/home_event.dart';
 import 'package:recorder/blocs/home/home_state.dart';
-import 'package:recorder/components/atoms/chat_bubble_atom.dart';
-import 'package:recorder/components/atoms/record_atom.dart';
+import 'package:recorder/components/organimsms/chat_bubble_organism.dart';
+import 'package:recorder/components/molecule/record_molecule.dart';
 import 'package:recorder/components/atoms/text_field_atom.dart';
 import 'package:recorder/models/audio.dart';
 import 'package:recorder/services/pallete.dart';
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               ..._homeBloc.audioList
                   .map(
-                    (final Audio audio) => ChatBubbleAtom(
+                    (final Audio audio) => ChatBubbleOrganism(
                       key: ValueKey(audio.path),
                       audio: audio,
                       player: _homeBloc.player,
@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 child: _homeBloc.isRecording
-                    ? RecordAtom(
+                    ? RecordMolecule(
                         stopWatchTimer: _homeBloc.stopWatchTimer,
                       )
                     : TextFieldAtom(),
