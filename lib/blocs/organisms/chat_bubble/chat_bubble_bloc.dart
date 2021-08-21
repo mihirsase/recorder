@@ -30,6 +30,7 @@ class ChatBubbleBloc extends Bloc<ChatBubbleEvent, ChatBubbleState> {
         position = 0;
         this.add(Reload());
       });
+      position = 0;
       duration = d!.inMilliseconds;
       stopWatchTimer.setPresetSecondTime(d.inSeconds);
       stopWatchTimer.onExecute.add(StopWatchExecute.start);

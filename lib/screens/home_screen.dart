@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       brightness: Brightness.dark,
       backgroundColor: Pallete.primary,
       title: Text(
-        'What\'s App',
+        'Recorder App',
         style: TextStyle(
           fontSize: 20,
         ),
@@ -81,9 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _body(final HomeState state) {
     return Column(
       children: [
+        SizedBox(
+          height: 12,
+        ),
         Expanded(
           child: ListView(
-            reverse: true,
             children: [
               ..._homeBloc.audioList
                   .map(
@@ -93,8 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       player: _homeBloc.player,
                     ),
                   )
-                  .toList()
-                  .reversed
                   .toList(),
             ],
           ),

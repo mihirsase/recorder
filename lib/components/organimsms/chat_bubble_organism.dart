@@ -90,7 +90,6 @@ class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
                             _chatBubbleBloc.add(PlayAudio());
                           }
                         }
-                        setState(() {});
                       },
                       child: Icon(
                         widget.player.isPlaying ? Icons.pause : Icons.play_arrow,
