@@ -88,88 +88,98 @@ class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    GestureDetector(
-                      onTap: () async {
-                        if (widget.audio.audioPlayer!.playing) {
-                          _chatBubbleBloc.add(PauseAudio());
-                        } else {
-                          if (widget.audio.audioPlayer!.playing == false &&
-                              _chatBubbleBloc.position != 0) {
-                            _chatBubbleBloc.add(ResumeAudio());
-                          } else {
-                            _chatBubbleBloc.add(PlayAudio());
-                          }
-                        }
-                      },
-                      child: Icon(
-                        widget.audio.audioPlayer!.playing ? Icons.pause : Icons.play_arrow,
-                        size: 38,
-                        color: Pallete.icon,
-                      ),
-                    ),
+                    _playButton,
                     SizedBox(
                       width: 12,
                     ),
-                    IgnorePointer(
-                      child: Stack(
-                        children: [
-                          SliderTheme(
-                            data: SliderThemeData(
-                              trackShape: CustomTrackShape(),
-                              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0),
-                            ),
-                            child: Slider(
-                              value: _chatBubbleBloc.position.toDouble(),
-                              max: widget.audio.audioPlayer?.duration?.inMilliseconds.toDouble() ??
-                                  0,
-                              activeColor: Pallete.icon,
-                              inactiveColor: Pallete.icon.withOpacity(0.5),
-                              onChanged: (double) {},
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            child: Text(
-                              widget.audio.audioPlayer!.playing
-                                  ? _chatBubbleBloc.formattedDuration
-                                  : widget.audio.formattedDuration,
-                              style: TextStyle(
-                                color: Pallete.icon,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    _positionSlider,
                   ],
                 ),
               ),
-              Positioned(
-                bottom: 0.0,
-                right: 0.0,
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      widget.audio.formattedTime,
-                      style: TextStyle(
-                        color: Pallete.icon,
-                        fontSize: 10.0,
-                      ),
-                    ),
-                    SizedBox(width: 3.0),
-                    Icon(
-                      Icons.done_all,
-                      size: 18.0,
-                      color: Pallete.icon,
-                    )
-                  ],
-                ),
-              )
+             _chatDetails,
             ],
           ),
         )
       ],
+    );
+  }
+
+  Widget get _playButton {
+    return GestureDetector(
+      onTap: () async {
+        if (widget.audio.audioPlayer!.playing) {
+          _chatBubbleBloc.add(PauseAudio());
+        } else {
+          if (widget.audio.audioPlayer!.playing == false && _chatBubbleBloc.position != 0) {
+            _chatBubbleBloc.add(ResumeAudio());
+          } else {
+            _chatBubbleBloc.add(PlayAudio());
+          }
+        }
+      },
+      child: Icon(
+        widget.audio.audioPlayer!.playing ? Icons.pause : Icons.play_arrow,
+        size: 38,
+        color: Pallete.icon,
+      ),
+    );
+  }
+
+  Widget get _positionSlider {
+    return IgnorePointer(
+      child: Stack(
+        children: [
+          SliderTheme(
+            data: SliderThemeData(
+              trackShape: CustomTrackShape(),
+              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0),
+            ),
+            child: Slider(
+              value: _chatBubbleBloc.position.toDouble(),
+              max: widget.audio.audioPlayer?.duration?.inMilliseconds.toDouble() ?? 0,
+              activeColor: Pallete.icon,
+              inactiveColor: Pallete.icon.withOpacity(0.5),
+              onChanged: (double) {},
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Text(
+              widget.audio.audioPlayer!.playing
+                  ? _chatBubbleBloc.formattedDuration
+                  : widget.audio.formattedDuration,
+              style: TextStyle(
+                color: Pallete.icon,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get _chatDetails{
+    return  Positioned(
+      bottom: 0.0,
+      right: 0.0,
+      child: Row(
+        children: <Widget>[
+          Text(
+            widget.audio.formattedTime,
+            style: TextStyle(
+              color: Pallete.icon,
+              fontSize: 10.0,
+            ),
+          ),
+          SizedBox(width: 3.0),
+          Icon(
+            Icons.done_all,
+            size: 18.0,
+            color: Pallete.icon,
+          )
+        ],
+      ),
     );
   }
 }

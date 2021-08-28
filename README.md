@@ -24,4 +24,6 @@ This is a flutter application for a demonstrating bloc pattern architecture and 
 - **permission_handler** : Manage Microphone permissions
 - **stop_watch_timer** : Keep track of audio record/play time
 - **intl** : Date formatting
+- **just_audio** : Playing recorded audio
+- **path_provider** : Used for getting the path of temp directory
 

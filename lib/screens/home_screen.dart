@@ -115,42 +115,44 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 width: 12,
               ),
-              NotificationListener(
-                child: GestureDetector(
-                  onTap: () {
-                    HapticFeedback.vibrate();
-                  },
-                  onLongPress: () async {
-                    _homeBloc.add(StartRecording());
-                  },
-                  onLongPressEnd: (LongPressEndDetails? details) async {
-                    _homeBloc.add(StopRecording());
-                  },
-                  onLongPressMoveUpdate: (LongPressMoveUpdateDetails? details) {
-                    if (details != null &&
-                        _homeBloc.isRecording &&
-                        details.offsetFromOrigin.dx < -60) {
-                      _homeBloc.add(CancelRecording());
-                    }
-                  },
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: BoxDecoration(
-                      color: Pallete.greenLight,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.mic,
-                      color: Pallete.white,
-                    ),
-                  ),
-                ),
-              ),
+              _recordButton,
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget get _recordButton {
+    return NotificationListener(
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.vibrate();
+        },
+        onLongPress: () async {
+          _homeBloc.add(StartRecording());
+        },
+        onLongPressEnd: (LongPressEndDetails? details) async {
+          _homeBloc.add(StopRecording());
+        },
+        onLongPressMoveUpdate: (LongPressMoveUpdateDetails? details) {
+          if (details != null && _homeBloc.isRecording && details.offsetFromOrigin.dx < -60) {
+            _homeBloc.add(CancelRecording());
+          }
+        },
+        child: Container(
+          height: 48,
+          width: 48,
+          decoration: BoxDecoration(
+            color: Pallete.greenLight,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.mic,
+            color: Pallete.white,
+          ),
+        ),
+      ),
     );
   }
 }

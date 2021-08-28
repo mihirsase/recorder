@@ -19,8 +19,15 @@ class _RecorderState extends State<Recorder> {
       title: 'Recorder',
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
+      builder: (context, widget) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaleFactor: 1.0,
+          ),
+          child: widget!,
+        );
+      },
       home: HomeScreen(),
     );
   }
 }
-
