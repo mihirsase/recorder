@@ -57,6 +57,28 @@ class _RecordMoleculeState extends State<RecordMolecule> {
             _displayTime,
             style: TextStyle(color: Pallete.icon, fontSize: 18),
           ),
+          SizedBox(
+            width: 12,
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.chevron_left,
+                  color: Pallete.textSecondary,
+                  size: 14,
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  'Swipe to cancel',
+                  style: TextStyle(color: Pallete.icon, fontSize: 14),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

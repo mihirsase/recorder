@@ -30,22 +30,31 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       HapticFeedback.vibrate();
       yield HomeLoaded();
     } else if (event is StopRecording) {
-      String? audio = await recorder.stop();
-      if (audio != null) {
-        final AudioPlayer audioPlayer = AudioPlayer();
-        final path = (await getTemporaryDirectory()).path;
-        await audioPlayer.setFilePath(path + '/$audio');
-        audioList.add(
-          Audio(
-            path: audio,
-            createdAt: DateTime.now(),
-            audioPlayer: audioPlayer,
-          ),
-        );
+      if (isRecording) {
+        String? audio = await recorder.stop();
+        if (audio != null) {
+          final AudioPlayer audioPlayer = AudioPlayer();
+          final path = (await getTemporaryDirectory()).path;
+          await audioPlayer.setFilePath(path + '/$audio');
+          audioList.add(
+            Audio(
+              path: audio,
+              createdAt: DateTime.now(),
+              audioPlayer: audioPlayer,
+            ),
+          );
+        }
+        isRecording = false;
+        stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+
+        yield HomeLoaded();
       }
+    } else if (event is CancelRecording) {
+      print('Recording cancelled');
+      await recorder.stop();
       isRecording = false;
       stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-
+      HapticFeedback.vibrate();
       yield HomeLoaded();
     }
   }

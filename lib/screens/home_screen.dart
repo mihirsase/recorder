@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recorder/blocs/home/home_bloc.dart';
 import 'package:recorder/blocs/home/home_event.dart';
@@ -114,23 +115,35 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 width: 12,
               ),
-              GestureDetector(
-                onLongPress: () async {
-                  _homeBloc.add(StartRecording());
-                },
-                onLongPressEnd: (LongPressEndDetails? details) async {
-                  _homeBloc.add(StopRecording());
-                },
-                child: Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    color: Pallete.greenLight,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.mic,
-                    color: Pallete.white,
+              NotificationListener(
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.vibrate();
+                  },
+                  onLongPress: () async {
+                    _homeBloc.add(StartRecording());
+                  },
+                  onLongPressEnd: (LongPressEndDetails? details) async {
+                    _homeBloc.add(StopRecording());
+                  },
+                  onLongPressMoveUpdate: (LongPressMoveUpdateDetails? details) {
+                    if (details != null &&
+                        _homeBloc.isRecording &&
+                        details.offsetFromOrigin.dx < -60) {
+                      _homeBloc.add(CancelRecording());
+                    }
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      color: Pallete.greenLight,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.mic,
+                      color: Pallete.white,
+                    ),
                   ),
                 ),
               ),
