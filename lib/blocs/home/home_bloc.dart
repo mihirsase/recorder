@@ -23,11 +23,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final HomeEvent event,
   ) async* {
     if (event is StartRecording) {
+      await VibrationService.instance.vibrate(100);
       recorder.record();
       isRecording = true;
       stopWatchTimer.onExecute.add(StopWatchExecute.reset);
       stopWatchTimer.onExecute.add(StopWatchExecute.start);
-      VibrationService.instance.vibrate(100);
 
       yield HomeLoaded();
     } else if (event is StopRecording) {

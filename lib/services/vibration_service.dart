@@ -8,7 +8,7 @@ class VibrationService {
   Future vibrate(int duration) async {
     bool? canVibrate = await Vibration.hasVibrator();
     if (canVibrate != null && canVibrate) {
-      Vibration.vibrate(duration: duration,);
+     await Vibration.vibrate(duration: duration,);
     }
   }
 }
