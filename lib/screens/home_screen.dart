@@ -9,6 +9,7 @@ import 'package:recorder/components/molecule/record_molecule.dart';
 import 'package:recorder/components/atoms/text_field_atom.dart';
 import 'package:recorder/models/audio.dart';
 import 'package:recorder/services/pallete.dart';
+import 'package:recorder/services/vibration_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -126,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get _recordButton {
     return NotificationListener(
       child: GestureDetector(
-        onTap: () {
-          HapticFeedback.vibrate();
+        onTap: () async{
+          VibrationService.instance.vibrate(100);
         },
         onLongPress: () async {
           _homeBloc.add(StartRecording());

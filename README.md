@@ -2,7 +2,7 @@
   
 This is a flutter application for a demonstrating bloc pattern architecture and audio recording functionality.  
 ## APK Link 
-[Android apk download link](https://drive.google.com/file/d/17t6KoMhNPsGev_tgo66cXQVe1Kc_3CT6/view?usp=sharing)
+[Android apk download link](https://drive.google.com/file/d/1Ip7q6A2r386H6FmwqfXNcveIgLxNDj-k/view?usp=sharing)
 
 
 ## Project Structure  
@@ -26,4 +26,4 @@ This is a flutter application for a demonstrating bloc pattern architecture and 
 - **intl** : Date formatting
 - **just_audio** : Playing recorded audio
 - **path_provider** : Used for getting the path of temp directory
-
+- **vibration** : Provides vibration feedback to the user
