@@ -2,22 +2,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recorder/blocs/organisms/chat_bubble/chat_bubble_event.dart';
 import 'package:recorder/blocs/organisms/chat_bubble/chat_bubble_state.dart';
 import 'package:recorder/models/audio.dart';
-import 'package:recorder/services/sound_player.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ChatBubbleBloc extends Bloc<ChatBubbleEvent, ChatBubbleState> {
-  final StopWatchTimer stopWatchTimer = StopWatchTimer(
-    mode: StopWatchMode.countDown,
-  );
+
   final Audio audio;
-  final SoundPlayer player;
   int position = 0;
-  int duration = 0;
   String formattedDuration = '';
 
   ChatBubbleBloc({
     required this.audio,
-    required this.player,
   }) : super(ChatBubbleLoaded());
 
   @override
@@ -25,33 +19,26 @@ class ChatBubbleBloc extends Bloc<ChatBubbleEvent, ChatBubbleState> {
     final ChatBubbleEvent event,
   ) async* {
     if (event is PlayAudio) {
-      Duration? d = await player.play(audio.path, () {
-        stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-        position = 0;
-        this.add(Reload());
-      });
-      position = 0;
-      duration = d!.inMilliseconds;
-      stopWatchTimer.setPresetSecondTime(d.inSeconds);
-      stopWatchTimer.onExecute.add(StopWatchExecute.start);
+
+      audio.audioPlayer!.play();
       yield ChatBubbleLoaded();
     } else if (event is PauseAudio) {
-      player.pause();
-      stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+      audio.audioPlayer!.pause();
       yield ChatBubbleLoaded();
     } else if (event is ResumeAudio) {
-      player.resume();
-      stopWatchTimer.onExecute.add(StopWatchExecute.start);
+      audio.audioPlayer!.play();
       yield ChatBubbleLoaded();
-    } else if (event is StopWatchTick) {
-      position = (duration - event.value).isNegative ? 0 : duration - event.value;
+    } else if (event is Tick) {
       formattedDuration = StopWatchTimer.getDisplayTime(
-        event.value,
+        event.position.inMilliseconds,
         hours: false,
         milliSecond: false,
       );
+      position = event.position.inMilliseconds;
       yield ChatBubbleLoaded();
     } else if (event is Reload) {
+      position = 0;
+      audio.audioPlayer!.stop();
       yield ChatBubbleLoaded();
     }
   }

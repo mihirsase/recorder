@@ -1,15 +1,16 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:recorder/blocs/home/home_event.dart';
 import 'package:recorder/blocs/home/home_state.dart';
 import 'package:recorder/models/audio.dart';
-import 'package:recorder/services/sound_player.dart';
 import 'package:recorder/services/sound_recoreder.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   SoundRecorder recorder = SoundRecorder();
-  SoundPlayer player = SoundPlayer();
   final StopWatchTimer stopWatchTimer = StopWatchTimer();
   FlutterSoundHelper flutterSoundHelper = FlutterSoundHelper();
   bool isRecording = false;
@@ -26,15 +27,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       isRecording = true;
       stopWatchTimer.onExecute.add(StopWatchExecute.reset);
       stopWatchTimer.onExecute.add(StopWatchExecute.start);
-
+      HapticFeedback.vibrate();
       yield HomeLoaded();
     } else if (event is StopRecording) {
       String? audio = await recorder.stop();
       if (audio != null) {
-        audioList.add(Audio(
-          path: audio,
-          createdAt: DateTime.now(),
-        ));
+        final AudioPlayer audioPlayer = AudioPlayer();
+        final path = (await getTemporaryDirectory()).path;
+        await audioPlayer.setFilePath(path + '/$audio');
+        audioList.add(
+          Audio(
+            path: audio,
+            createdAt: DateTime.now(),
+            audioPlayer: audioPlayer,
+          ),
+        );
       }
       isRecording = false;
       stopWatchTimer.onExecute.add(StopWatchExecute.stop);

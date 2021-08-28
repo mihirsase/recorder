@@ -1,24 +1,29 @@
 import 'package:intl/intl.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class Audio {
   String path;
-  Duration? duration;
   DateTime? createdAt;
+  AudioPlayer? audioPlayer;
 
-  Audio({required this.path, this.createdAt, this.duration});
+  Audio({
+    required this.path,
+    this.createdAt,
+    this.audioPlayer,
+  });
 
   String get formattedTime {
     if (createdAt != null) {
-      return DateFormat('hh:mm a').format(DateTime.now());
+      return DateFormat('hh:mm a').format(createdAt!);
     }
     return '';
   }
 
   String get formattedDuration {
-    if (duration != null)
+    if (audioPlayer != null && audioPlayer!.duration !=null)
       return StopWatchTimer.getDisplayTime(
-        duration!.inMilliseconds,
+        audioPlayer!.duration!.inMilliseconds,
         hours: false,
         milliSecond: false,
       );

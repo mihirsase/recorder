@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recorder/components/molecule/blinking_molecule.dart';
 import 'package:recorder/services/pallete.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -19,13 +20,14 @@ class _RecordMoleculeState extends State<RecordMolecule> {
   @override
   void initState() {
     widget.stopWatchTimer.rawTime.listen((value) {
-      setState(() {
-        _displayTime = StopWatchTimer.getDisplayTime(
-          value,
-          hours: false,
-          milliSecond: false,
-        );
-      });
+      if (mounted)
+        setState(() {
+          _displayTime = StopWatchTimer.getDisplayTime(
+            value,
+            hours: false,
+            milliSecond: false,
+          );
+        });
     });
     super.initState();
   }
@@ -43,9 +45,10 @@ class _RecordMoleculeState extends State<RecordMolecule> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.mic,
-            color: Pallete.red,
+          BlinkingMolecule(
+            icon: Icons.mic,
+            primaryColor: Pallete.red,
+            secondaryColor: Pallete.primaryLight,
           ),
           SizedBox(
             width: 12,

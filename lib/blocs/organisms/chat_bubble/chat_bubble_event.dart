@@ -8,9 +8,10 @@ class ResumeAudio extends ChatBubbleEvent {}
 
 class Reload extends ChatBubbleEvent {}
 
-class StopWatchTick extends ChatBubbleEvent {
-  final int value;
+class Tick extends ChatBubbleEvent {
+  final Duration position;
 
-  StopWatchTick({required this.value,});
+  Tick({
+    required this.position,
+  });
 }
-

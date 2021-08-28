@@ -23,14 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _homeBloc = HomeBloc();
     _homeBloc.recorder.init();
-    _homeBloc.player.init();
+
     super.initState();
   }
 
   @override
   void dispose() {
     _homeBloc.recorder.dispose();
-    _homeBloc.player.dispose();
     super.dispose();
   }
 
@@ -92,7 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     (final Audio audio) => ChatBubbleOrganism(
                       key: ValueKey(audio.path),
                       audio: audio,
-                      player: _homeBloc.player,
                     ),
                   )
                   .toList(),

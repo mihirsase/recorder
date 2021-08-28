@@ -1,20 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:recorder/blocs/organisms/chat_bubble/chat_bubble_bloc.dart';
 import 'package:recorder/blocs/organisms/chat_bubble/chat_bubble_event.dart';
 import 'package:recorder/blocs/organisms/chat_bubble/chat_bubble_state.dart';
 import 'package:recorder/models/audio.dart';
 import 'package:recorder/services/pallete.dart';
-import 'package:recorder/services/sound_player.dart';
 
 class ChatBubbleOrganism extends StatefulWidget {
   final Audio audio;
-  final SoundPlayer player;
 
   ChatBubbleOrganism({
     required this.audio,
-    required this.player,
     Key? key,
   }) : super(key: key);
 
@@ -29,10 +27,21 @@ class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
   void initState() {
     _chatBubbleBloc = ChatBubbleBloc(
       audio: widget.audio,
-      player: widget.player,
     );
-    _chatBubbleBloc.stopWatchTimer.rawTime.listen((value) {
-      _chatBubbleBloc.add(StopWatchTick(value: value));
+    widget.audio.audioPlayer!.positionStream.listen((final Duration? duration) {
+      if (duration != null &&
+          widget.audio.audioPlayer!.duration != null &&
+          duration.inMilliseconds < widget.audio.audioPlayer!.duration!.inMilliseconds) {
+        _chatBubbleBloc.add(Tick(
+          position: duration,
+        ));
+      }
+    });
+
+    widget.audio.audioPlayer!.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        _chatBubbleBloc.add(Reload());
+      }
     });
     super.initState();
   }
@@ -81,10 +90,11 @@ class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        if (widget.player.isPlaying) {
+                        if (widget.audio.audioPlayer!.playing) {
                           _chatBubbleBloc.add(PauseAudio());
                         } else {
-                          if (widget.player.isPaused && _chatBubbleBloc.position != 0) {
+                          if (widget.audio.audioPlayer!.playing == false &&
+                              _chatBubbleBloc.position != 0) {
                             _chatBubbleBloc.add(ResumeAudio());
                           } else {
                             _chatBubbleBloc.add(PlayAudio());
@@ -92,7 +102,7 @@ class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
                         }
                       },
                       child: Icon(
-                        widget.player.isPlaying ? Icons.pause : Icons.play_arrow,
+                        widget.audio.audioPlayer!.playing ? Icons.pause : Icons.play_arrow,
                         size: 38,
                         color: Pallete.icon,
                       ),
@@ -110,7 +120,8 @@ class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
                             ),
                             child: Slider(
                               value: _chatBubbleBloc.position.toDouble(),
-                              max: _chatBubbleBloc.duration.toDouble(),
+                              max: widget.audio.audioPlayer?.duration?.inMilliseconds.toDouble() ??
+                                  0,
                               activeColor: Pallete.icon,
                               inactiveColor: Pallete.icon.withOpacity(0.5),
                               onChanged: (double) {},
@@ -119,7 +130,7 @@ class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
                           Positioned(
                             bottom: 0,
                             child: Text(
-                              widget.player.isPlaying
+                              widget.audio.audioPlayer!.playing
                                   ? _chatBubbleBloc.formattedDuration
                                   : widget.audio.formattedDuration,
                               style: TextStyle(
@@ -139,11 +150,13 @@ class _ChatBubbleOrganismState extends State<ChatBubbleOrganism> {
                 right: 0.0,
                 child: Row(
                   children: <Widget>[
-                    Text(widget.audio.formattedTime,
-                        style: TextStyle(
-                          color: Pallete.icon,
-                          fontSize: 10.0,
-                        )),
+                    Text(
+                      widget.audio.formattedTime,
+                      style: TextStyle(
+                        color: Pallete.icon,
+                        fontSize: 10.0,
+                      ),
+                    ),
                     SizedBox(width: 3.0),
                     Icon(
                       Icons.done_all,
